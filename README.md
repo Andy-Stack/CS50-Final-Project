@@ -1,3 +1,5 @@
+## CS50 Final Project
+
 ## Project Description
 For my final project, I have created a website that utilises the NASA Open API (Mars Rover). My web application offers the following features:
 1. Registration and sign in
