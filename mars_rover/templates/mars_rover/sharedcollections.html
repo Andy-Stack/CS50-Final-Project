@@ -1,0 +1,101 @@
+{% extends 'mars_rover/layout.html' %}
+{% load static %}
+<!doctype html>
+<html lang="en">
+    {% block head %}
+    {{ block.super }}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <link href="{% static 'mars_rover/sharedcollections.css' %}" rel="stylesheet">
+    <script src="{% static 'mars_rover/sharedcollections.js' %}"></script>
+    <script> var csrf_token = '{{ csrf_token }}' </script>
+    <script> var results_count = '{{ result_count }}' </script>
+
+    <!-- handlebars template for slide thumbnails -->
+    <script id="resultTemplate" type="text/x-handlebars-template">
+{% verbatim %}
+<div class="row justify-content-start fadeIn">
+    <div class="card mb-3" data-colID="{{ id }}">
+        <div class="row no-gutters">
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title"><u>{{ title }}</u></h5>
+                    <p class="card-text">{{ description }}</p>
+                    <p class="card-text"><small class="text-muted">Likes: {{ likes }}</small></p>
+        </div>
+        </div>
+            <div class="col-md-4">
+                <img src="{{ thumbnail }}" class="card-img" alt="Collection Thumnail">
+        </div>
+        </div>
+        </div>
+        </div>
+{% endverbatim %}
+    </script>
+    {% endblock %}
+
+    {% block body %}
+    <div class="jumbotron text-center">
+        <h1 class="display-4">Search</h1>
+        <form id="search-form" method="post">
+            <div class="input-group input-group-lg w-50 mx-auto" id="search_container">
+                <input type="text" class="form-control" id="search-query" placeholder="Collection Tittle" aria-label="Collection Tittle" aria-describedby="inputGroup-sizing-lg">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-info" type="submit">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search text-primary" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
+                            <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <hr class="my-4">
+        <p>You can serch for a collection by title or view the most popular collections below.</p>
+        <a class="btn btn-outline-info" role="button" id="load-popular">View Most Popular</a>
+    </div>
+
+    <!-- search results -->
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="col" id="col-results">
+                {% if collection_results %}
+                {% for result in collection_results %}
+                <div class="row justify-content-start fadeIn">
+                    <div class="card mb-3" data-colID="{{result.collection.id}}">
+                        <div class="row no-gutters">
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title"><u>{{result.collection.title}}</u></h5>
+                                    <p class="card-text">{{result.collection.description|truncatechars:170}}</p>
+                                    <p class="card-text"><small class="text-muted">Likes: {{result.collection.likes}}</small></p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <img src="{{result.collection.thumbnail}}" class="card-img" alt="Collection Thumnail">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <hr class="featurette-divider">
+                <div class="text-center">
+                    <p class="lead">No collections have been shared.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Spinner (loading) -->
+            <div id="spinner">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border m-5" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+    {{ block.super }}
+    {% endblock %}
+</html>

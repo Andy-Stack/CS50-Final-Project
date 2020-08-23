@@ -1,0 +1,17 @@
+#registerHeading {
+    text-align: center;
+}
+#registerForm {
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+}
+.featurette-divider {
+    margin: 1rem 0; /* Space out the Bootstrap <hr> more */
+}
+
+/* media queries */
+@media only screen and (max-width: 768px) {
+    #registerForm {
+        margin: 4rem 2rem;
+    }
+}

@@ -1,0 +1,153 @@
+{% extends 'mars_rover/layout.html' %}
+{% load static %}
+<!doctype html>
+<html lang="en">
+    {% block head %}
+    {{ block.super }}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <link href="{% static 'mars_rover/usercollections.css' %}" rel="stylesheet">
+    <script src="{% static 'mars_rover/usercollections.js' %}"></script>
+    <script> var collection_count = {{ collection_count }} </script>
+    <script> var csrf_token = '{{ csrf_token }}' </script>
+
+    <!-- handlebars template for image results -->
+    <script id="collectionTemplate" type="text/x-handlebars-template">
+{% verbatim %}
+<div class="col-md-4 fadeIn" id="del{{ id }}" style="opacity: 0">
+    <div class="card mb-4 box-shadow">
+        <img class="card-img-top" src="{{ imageUrl }}">
+        <div class="card-body">
+            <p class="card-text">{{ title }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary col-edit-share" data-col="{{ id }}">Edit / Share</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger col-delete" data-col="{{ id }},{{ title }}">Delete</button>
+        </div>
+                <small class="text-muted">Likes: {{ likes }}</small>
+        </div>
+        </div>
+        </div>
+        </div>
+{% endverbatim %}
+    </script>
+    {% endblock %}
+
+    {% block body %}
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">{{ request.user.get_short_name }}'s Collections</h1>
+            <p class="lead text-muted">You can edit, view and share your collections here. <br> Once you have created a collection, add new images by searching on the <a href="{% url 'mars_images' %}">Mars Images</a> page and selecting 'Add to Collection'. You can then share your collection with other users and view them on the <a href="{% url 'sharedcollections' %}">Shared Collections</a> page.</p>
+            <p>
+                <button type="button" class="btn btn-primary col-new" id="new-collection" data-toggle="modal" data-target="#newCollectionModal">Create New Collection</button>
+            </p>
+        </div>
+    </section>
+
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-start" id="col-album">
+                {% for collection in user_collections %}
+                <div class="col-md-4 fadeIn" id="del{{collection.id}}">
+                    <div class="card mb-4 box-shadow">
+                        <img class="card-img-top" src="{{collection.thumbnail}}">
+                        <div class="card-body">
+                            <p class="card-text">{{collection.title}}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary col-edit-share" data-col="{{collection.id}}">Edit / Share</button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger col-delete" data-col="{{collection.id}},{{collection.title}}">Delete</button>
+                                </div>
+                                <small class="text-muted">Likes: {{collection.likes}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Spinner (loading) -->
+            <div id="spinner">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border m-5" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertModalLongTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="alertBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLongTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="confirmBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirm" data-dismiss="modal" data-purpose="default"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create New Collection Modal -->
+    <div class="modal fade" id="newCollectionModal" tabindex="-1" role="dialog" aria-labelledby="newCollectionModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newCollectionModalLongTitle">Create Collection</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newCollectionForm" method="post">
+                        <div class="form-group">
+                            <label for="collection-name" class="col-form-label">Collection Name:</label>
+                            <input type="text" class="form-control" id="collection-name" placeholder="New Collection" required="true">
+                            <small class="text-muted float-right">Maximum 20 Characters</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="collection-description" class="col-form-label">Description:</label>
+                            <textarea class="form-control" id="collection-description" rows="5" placeholder="Describe your collection here. (You can add this later if you prefer.)"></textarea>
+                            <small class="text-muted float-right">Maximum 300 Characters</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" form="newCollectionForm" class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ block.super }}
+    {% endblock %}
+</html>

@@ -1,0 +1,117 @@
+#searchHeading {
+    text-align: center;
+}
+#formContainer {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+.featurette-divider {
+    margin: 1rem 0; /* Space out the Bootstrap <hr> more */
+}
+.album {
+    margin-bottom: 1rem;
+}
+.box-shadow { 
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); 
+}
+#spinner {
+    display: none;
+}
+#preview-img {
+    max-width: 50%;
+}
+
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+.fadeIn {
+    animation-name: fadein;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+
+/* The Modal (background) */
+.imageModal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 3.5rem; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (image) */
+.image-modal-content {
+    margin: auto;
+    max-height: 95%;
+    max-width: 95%;
+}
+
+/* Modal Animation */
+.image-modal-content {  
+    -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s;
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+    from {-webkit-transform:scale(0)} 
+    to {-webkit-transform:scale(1)}
+}
+
+@keyframes zoom {
+    from {transform:scale(0)} 
+    to {transform:scale(1)}
+}
+
+/* The Close Button */
+.close-modal {
+    position: absolute;
+    top: 3rem;
+    right: 2%;
+    color: #f1f1f1;
+    font-size: 2.5rem;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.close-modal:hover,
+.close-modal:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/** media queries **/
+@media only screen and (max-width: 992px) {
+    .col-md-4 {
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+@media only screen and (max-width: 768px) {
+    #formContainer {
+        margin-left: 2rem;
+        margin-right: 2rem;
+    }
+    .modal-content {
+        width: 100%;
+    }
+    .col-md-4 {
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

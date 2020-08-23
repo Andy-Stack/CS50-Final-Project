@@ -1,0 +1,4 @@
+Django==3.0.7
+django-crispy-forms
+requests
+django-environ

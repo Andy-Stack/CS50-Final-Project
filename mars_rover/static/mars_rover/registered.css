@@ -1,0 +1,8 @@
+#registeredMessage {
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+    text-align: center;
+}
+.featurette-divider {
+    margin: 1rem 0; /* Space out the Bootstrap <hr> more */
+}

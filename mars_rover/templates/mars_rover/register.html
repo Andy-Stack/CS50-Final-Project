@@ -1,0 +1,27 @@
+{% extends 'mars_rover/layout.html' %}
+{% load static %}
+<!doctype html>
+<html lang="en">
+    {% block head %}
+    {{ block.super }}
+     <script src="{% static 'mars_rover/register.js' %}"></script>
+    <link href="{% static 'mars_rover/register.css' %}" rel="stylesheet">
+    {% endblock %}
+
+    {% load crispy_forms_tags %}
+    {% block body %}
+    <div class="row">
+        <div class="col-md-4 offset-md-4" id="registerForm">
+            <h2 id="registerHeading">Create your new account</h2>
+            <hr class="featurette-divider">
+            <form method="POST" class="form-group">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <hr class="featurette-divider">
+                <button type="submit" class="btn btn-success">Register</button>
+            </form>
+        </div>
+    </div>
+    {{block.super}}
+    {% endblock %}
+</html>

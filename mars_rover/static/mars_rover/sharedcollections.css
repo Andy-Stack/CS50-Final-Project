@@ -1,0 +1,57 @@
+/** additional page styling **/
+.jumbotron {
+    padding-bottom: 1.5em;
+    margin-bottom: 0;
+}
+#spinner {
+    display: none;
+}
+.card {
+    width: 100%;
+}
+.card:hover {
+    cursor: pointer;
+}
+.card-img {
+    min-height: 12em;
+    max-height: 12em;
+    object-fit: contain;
+    background-color: #D3D3D3;
+}
+
+/** Fade in collection images **/
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+.fadeIn {
+    animation-name: fadein;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+@keyframes fadeout {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+.fadeOut {
+    animation-name: fadeout;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+
+/** media queries **/
+@media only screen and (max-width: 768px) {
+    #search_container {
+        width: 100%!important;
+    }
+}

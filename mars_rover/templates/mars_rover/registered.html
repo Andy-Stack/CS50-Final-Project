@@ -1,0 +1,22 @@
+{% extends 'mars_rover/layout.html' %}
+{% load static %}
+<!doctype html>
+<html lang="en">
+    {% block head %}
+    {{ block.super }}
+    <link href="{% static 'mars_rover/registered.css' %}" rel="stylesheet">
+    {% endblock %}
+
+    {% block body %}
+    <div class="row">
+        <div class="col-md-4 offset-md-4" id="registeredMessage">
+            <h2>Registration Complete</h2>
+            <hr class="featurette-divider">
+            <h3>Now that you have an account, you are ready to start exploring Mars!</h3>
+            <hr class="featurette-divider">
+            <a href="{% url 'usercollections' %}" class="btn btn-primary">Get Started</a>
+        </div>
+    </div>
+    {{block.super}}
+    {% endblock %}
+</html>

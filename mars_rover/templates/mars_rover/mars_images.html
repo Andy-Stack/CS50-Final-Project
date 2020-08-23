@@ -1,0 +1,124 @@
+{% extends 'mars_rover/layout.html' %}
+{% load static %}
+<!doctype html>
+<html lang="en">
+    {% block head %}
+    {{ block.super }}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <link href="{% static 'mars_rover/mars_images.css' %}" rel="stylesheet">
+    <script src="{% static 'mars_rover/mars_images.js' %}"></script>
+    <script> var csrf_token = '{{ csrf_token }}' </script>
+
+    <!--handlebars template for image results-->
+    <script id="resultTemplate" type="text/x-handlebars-template">
+{% verbatim %}
+<div class="col-md-4 fadeIn" style="opacity: 0">
+    <div class="card mb-4 box-shadow">
+        <img class="card-img-top" src="{{ imageUrl }}">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary img-view" data-source="{{ imageUrl }}">View Image</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary img-add" data-source="{{ imageUrl }}">Add to Collection</button>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+{% endverbatim %}
+    </script>
+    {% endblock %}
+
+    {% load crispy_forms_tags %}
+    {% block body %}
+
+    <!--Modal (backdrop)-->
+    <div class="imageModal">
+        <span class="close-modal">&times;</span>
+        <div class="d-flex align-items-center justify-content-center h-100">
+            <img class="image-modal-content">
+        </div>
+    </div>
+
+    <!--Search form (select with opt) and date-->
+    <div class="row no-gutters">
+        <div class="col-md-6 offset-md-3" id="formContainer">
+            <h2 id="searchHeading">Mars Image Search</h2>
+            <hr class="featurette-divider">
+            <form id="marsImageForm" class="form-group">
+                {{ form|crispy }}                
+                <hr class="featurette-divider">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="button" class="btn btn-secondary float-right" id="formHelp">Help</button>
+            </form>
+
+            <hr class="featurette-divider">
+
+        </div>
+    </div>
+
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-start" id="albumContent">
+            </div>
+        </div>
+    </div>
+
+    <div id="spinner">
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border m-5" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertModalLongTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="alertBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Choose Collection Modal (add image) -->
+    <div class="modal fade" id="chooseCollectionModal" tabindex="-1" role="dialog" aria-labelledby="chooseCollectionModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chooseCollectionModalLongTitle">Confirm Collection</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="chooseCollectionForm" method="post">
+                        <div class="form-group">
+                            <label for="collection-name-select" class="col-form-label">Choose a Collection:</label>
+                            <select class="form-control" id="collection-name-select" id="col-select" required="true"></select>
+                        </div>
+                    </form>
+                    <img src="" class="img-thumbnail mx-auto d-block" id="preview-img">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" form="chooseCollectionForm" class="btn btn-primary">Add to Collection</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ block.super }}
+    {% endblock %}
+</html>
